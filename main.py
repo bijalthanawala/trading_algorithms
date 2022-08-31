@@ -12,10 +12,10 @@ ALGORITHMS_LIST = {
         }
 
 def setup_argument_parser() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Trading Algorithm")
+    parser = argparse.ArgumentParser(description="Trading Algorithm", formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parser.add_argument("--file", "-f", default=DEFAULT_CSV_FILENAME, help=f"Name of the input CSV file (Default={DEFAULT_CSV_FILENAME})")
-    parser.add_argument("--algorithm", "-a", type=int, default=1, choices= ALGORITHMS_LIST.keys(), help=f"Specify the algorithm number {pprint.pformat(ALGORITHMS_LIST)} (Default=1)")
+    parser.add_argument("--algorithm", "-a", type=int, default=1, choices= ALGORITHMS_LIST.keys(), help=f"Specify one of the algorithm numbers (Default=1)\n{pprint.pformat(ALGORITHMS_LIST)}")
     args = parser.parse_args(sys.argv[1:])
     return args
 
