@@ -35,7 +35,7 @@ class TradingAlgorithms:
 
     def run(self, algorithm_choice):
         # todo: find better way than this
-        self.ALGORITHMS[algorithm_choice](self)
+        self.ALGORITHMS()[algorithm_choice](self)
 
     def algorithm_simple(self):
         print("algorithm_simple")
