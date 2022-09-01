@@ -36,6 +36,7 @@ def read_csv_file(
     column_translations: List[ColumnTranslation],
     row_object_type: type,
 ) -> Result:
+    line_number = -1
     row_objects: List = []
 
     logging.info(f"Reading CSV file: {csv_filename}")
@@ -44,19 +45,38 @@ def read_csv_file(
             csv_filename, newline="", encoding="ascii", errors="ignore"
         ) as csvfile:
             reader = csv.DictReader(csvfile)
+            line_number = 2  # The very first line is the header
             for row in reader:
+                logging.debug(row)
+                if len(row) != len(column_translations):
+                    return Result(
+                        False,
+                        message=f"File: {csv_filename} Line number: {line_number} Error: Found {len(row)} fields, expected {len(column_translations)}",
+                        result=None,
+                    )
+
+                # todo: Replace this dict comprehension with code that is readable, and which can catch the missing header condition accurately
                 row_object = row_object_type(
                     **{
                         translation.column_name_xlat: translation.column_type(
-                            row[translation.column_name]
+                            row.get(
+                                translation.column_name,
+                                f"Field '{translation.column_name}' missing!",
+                            )
                         )
                         for translation in column_translations
                     }
                 )
                 logging.debug(row_object)
                 row_objects.append(row_object)
+                line_number += 1
     except Exception as ex:
-        return Result(isSuccess=False, message=str(ex), result=None)
+        message = (
+            str(ex)
+            if line_number == -1
+            else f"File: {csv_filename} Line Number: {line_number} Error: {str(ex)}"
+        )
+        return Result(isSuccess=False, message=message, result=None)
 
     logging.info(f"Read {len(row_objects)} rows")
     logging.debug(row_objects)
