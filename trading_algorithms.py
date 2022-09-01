@@ -1,6 +1,6 @@
 from typing import Dict
 from result import Result
-from trade_point import TradePoint
+from stock_price import StockPrice
 from csv_util import ColumnTranslation, read_csv_file
 
 
@@ -30,7 +30,7 @@ class TradingAlgorithms:
             ColumnTranslation("Time", "minute", int),
             ColumnTranslation("Price", "price", float),
         ]
-        result = read_csv_file(csv_filename, column_translations, TradePoint)
+        result = read_csv_file(csv_filename, column_translations, StockPrice)
         return result
 
     def run(self, algorithm_choice):
