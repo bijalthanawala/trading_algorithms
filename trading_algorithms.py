@@ -1,10 +1,13 @@
-from typing import Dict
+from typing import List, Dict
 from result import Result
 from stock_price import StockPrice
 from csv_util import ColumnTranslation, read_csv_file
 
 
 class TradingAlgorithms:
+    DEFAULT_MIN_HOLD_MINUTES: int = 30
+    DEFAULT_MAX_HOLD_MINUTES: int = 60
+
     @classmethod
     def ALGORITHMS(cls) -> Dict:
         return {
@@ -22,10 +25,13 @@ class TradingAlgorithms:
         }
 
     def __init__(self, csv_filename):
-        self.init_result = self.prepare_trading_points(csv_filename)
-        self.trading_points = self.init_result.result
+        self.min_hold: int = self.DEFAULT_MIN_HOLD_MINUTES
+        self.max_hold: int = self.DEFAULT_MAX_HOLD_MINUTES
 
-    def prepare_trading_points(self, csv_filename) -> Result:
+        self.init_result: Result = self.read_stock_prices(csv_filename)
+        self.stock_prices: List[StockPrice] = self.init_result.result
+
+    def read_stock_prices(self, csv_filename) -> Result:
         column_translations = [
             ColumnTranslation("Time", "minute", int),
             ColumnTranslation("Price", "price", float),
@@ -34,12 +40,12 @@ class TradingAlgorithms:
         return result
 
     def run(self, algorithm_choice):
-        # todo: find better way than this
+        # todo: find better way to do this
         self.ALGORITHMS()[algorithm_choice](self)
 
     def algorithm_simple(self):
         print("algorithm_simple")
-        print(self.trading_points)
+        print(self.stock_prices)
 
     def algorithm_complex(self):
         print("algorithm_complex")

@@ -3,6 +3,8 @@ from stock_price import StockPrice
 
 
 class TradePoint:
+    UNDETERMINED: float = float("inf")
+
     def __init__(self, purchase_point: StockPrice):
         self.purchase_point: StockPrice
         self.sell_point: Union[StockPrice, None]
@@ -15,14 +17,14 @@ class TradePoint:
 
     @property
     def profit(self):
-        difference = -1
+        difference: float = self.UNDETERMINED
         if self.sell_point:
             difference = self.sell_point.price - self.purchase_point.price
         return difference
 
     @property
     def duration_held(self):
-        difference = -1
+        difference: float = self.UNDETERMINED
         if self.sell_point:
             difference = self.sell_point.minute - self.purchase_point.minute
         return difference
