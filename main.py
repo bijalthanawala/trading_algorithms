@@ -12,7 +12,7 @@ ALGORITHMS_LIST = {
 }
 
 
-def setup_argument_parser(unparsed_args: List[str]) -> argparse.Namespace:
+def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Trading Algorithm", formatter_class=argparse.RawTextHelpFormatter
     )
@@ -45,7 +45,7 @@ def setup_logger(parsed_args: argparse.Namespace):
 
 
 def main(sys_argv: List[str]) -> bool:
-    parsed_args = setup_argument_parser(sys_argv[1:])
+    parsed_args = parse_arguments(sys_argv[1:])
     setup_logger(parsed_args)
     pprint.pprint(parsed_args)
 
