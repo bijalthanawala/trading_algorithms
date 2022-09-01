@@ -20,20 +20,53 @@ class Result:
     info: str
 
 
-# todo: Start this method here initially and move this to a different file/module later
+# todo: Move this class to a different file later
+@dataclass
+class TradePoint:
+    minute: int
+    price: str
+
+
+# todo: Move this class to a different file later
+class column_translation:
+    def __init__(self, column_name, column_name_xlat, column_type):
+        self.column_name = column_name
+        self.column_name_xlat = column_name_xlat
+        self.column_type = column_type
+
+
+# todo: Start this method here initially. Split, refactor and move to a different file/module later
 def read_csv_file(csv_filename: str) -> Result:
+    trade_points: List[TradePoint] = []
+    column_minute = column_translation("Time", "minute", int)
+    column_price = column_translation("Price", "price", float)
+
+    column_translations = []
+    column_translations.append(column_minute)
+    column_translations.append(column_price)
+
     try:
         with open(
             csv_filename, newline="", encoding="ascii", errors="ignore"
         ) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                print(row)
+                tp = TradePoint(
+                    **{
+                        translation.column_name_xlat: translation.column_type(
+                            row[translation.column_name]
+                        )
+                        for translation in column_translations
+                    }
+                )
+                print(tp)
+                trade_points.append(tp)
     except Exception as ex:
-        return Result(False, str(ex))
+        return Result(isSuccess=False, info=str(ex))
 
-        print()
-    return Result(True, "")
+    print(trade_points)
+
+    return Result(isSuccess=True, info="")
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
