@@ -4,7 +4,9 @@ import csv
 import argparse
 import logging
 import pprint
-from typing import List, Any
+from typing import List
+
+from result import Result
 
 DEFAULT_CSV_FILENAME = "data_10.csv"
 ALGORITHMS_LIST = {
@@ -21,15 +23,7 @@ class TradePoint:
 
 
 # todo: Move this class to a different file later
-@dataclass
-class Result:
-    isSuccess: bool
-    message: str
-    result: Any
-
-
-# todo: Move this class to a different file later
-class column_translation:
+class ColumnTranslation:
     def __init__(self, column_name, column_name_xlat, column_type):
         self.column_name = column_name
         self.column_name_xlat = column_name_xlat
@@ -37,22 +31,21 @@ class column_translation:
 
 
 # todo: Start this method here initially. Split, refactor and move to a different file/module later
-def read_csv_file(csv_filename: str) -> Result:
-    trade_points: List[TradePoint] = []
-    column_minute = column_translation("Time", "minute", int)
-    column_price = column_translation("Price", "price", float)
+def read_csv_file(
+    csv_filename: str,
+    column_translations: List[ColumnTranslation],
+    row_object_type: type,
+) -> Result:
+    row_objects: List = []
 
-    column_translations = []
-    column_translations.append(column_minute)
-    column_translations.append(column_price)
-
+    logging.info(f"Reading CSV file: {csv_filename}")
     try:
         with open(
             csv_filename, newline="", encoding="ascii", errors="ignore"
         ) as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                tp = TradePoint(
+                row_object = row_object_type(
                     **{
                         translation.column_name_xlat: translation.column_type(
                             row[translation.column_name]
@@ -60,14 +53,15 @@ def read_csv_file(csv_filename: str) -> Result:
                         for translation in column_translations
                     }
                 )
-                print(tp)
-                trade_points.append(tp)
+                logging.debug(row_object)
+                row_objects.append(row_object)
     except Exception as ex:
         return Result(isSuccess=False, message=str(ex), result=None)
 
-    print(trade_points)
+    logging.info(f"Read {len(row_objects)} rows")
+    logging.debug(row_objects)
 
-    return Result(isSuccess=True, message="", result=trade_points)
+    return Result(isSuccess=True, message="", result=row_objects)
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
@@ -93,19 +87,32 @@ def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
     return parsed_args
 
 
-def setup_logger(parsed_args: argparse.Namespace) -> None:
+def setup_logger(verbosity: int) -> None:
     level_to_set = logging.WARNING
-    if parsed_args.verbose >= 2:
+    if verbosity >= 2:
         level_to_set = logging.DEBUG
-    elif parsed_args.verbose == 1:
+    elif verbosity == 1:
         level_to_set = logging.INFO
     logging.basicConfig(format="%(message)s", level=level_to_set)
 
 
+def prepare_trading_points(csv_filename) -> Result:
+    column_minute = ColumnTranslation("Time", "minute", int)
+    column_price = ColumnTranslation("Price", "price", float)
+
+    column_translations = []
+    column_translations.append(column_minute)
+    column_translations.append(column_price)
+    result = read_csv_file(csv_filename, column_translations, TradePoint)
+
+    return result
+
+
 def main(sys_argv: List[str]) -> bool:
+
     parsed_args = parse_arguments(sys_argv[1:])
-    setup_logger(parsed_args)
-    result = read_csv_file(parsed_args.file)
+    setup_logger(parsed_args.verbose)
+    result = prepare_trading_points(parsed_args.file)
 
     if not result.isSuccess:
         print(f"Error encountered: {result.message}")
@@ -113,7 +120,7 @@ def main(sys_argv: List[str]) -> bool:
         return result.isSuccess
 
     trade_points = result.result
-    print(trade_points)
+    logging.debug(trade_points)
 
     return True
 
