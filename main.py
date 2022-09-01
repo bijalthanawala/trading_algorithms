@@ -4,7 +4,7 @@ import csv
 import argparse
 import logging
 import pprint
-from typing import List
+from typing import List, Any
 
 DEFAULT_CSV_FILENAME = "data_10.csv"
 ALGORITHMS_LIST = {
@@ -15,16 +15,17 @@ ALGORITHMS_LIST = {
 
 # todo: Move this class to a different file later
 @dataclass
-class Result:
-    isSuccess: bool
-    info: str
+class TradePoint:
+    minute: int
+    price: str
 
 
 # todo: Move this class to a different file later
 @dataclass
-class TradePoint:
-    minute: int
-    price: str
+class Result:
+    isSuccess: bool
+    message: str
+    result: Any
 
 
 # todo: Move this class to a different file later
@@ -62,11 +63,11 @@ def read_csv_file(csv_filename: str) -> Result:
                 print(tp)
                 trade_points.append(tp)
     except Exception as ex:
-        return Result(isSuccess=False, info=str(ex))
+        return Result(isSuccess=False, message=str(ex), result=None)
 
     print(trade_points)
 
-    return Result(isSuccess=True, info="")
+    return Result(isSuccess=True, message="", result=trade_points)
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
@@ -92,7 +93,7 @@ def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
     return parsed_args
 
 
-def setup_logger(parsed_args: argparse.Namespace):
+def setup_logger(parsed_args: argparse.Namespace) -> None:
     level_to_set = logging.WARNING
     if parsed_args.verbose >= 2:
         level_to_set = logging.DEBUG
@@ -107,10 +108,14 @@ def main(sys_argv: List[str]) -> bool:
     result = read_csv_file(parsed_args.file)
 
     if not result.isSuccess:
-        print(f"Error encountered: {result.info}")
+        print(f"Error encountered: {result.message}")
         print("Please fix the above error and rerun")
+        return result.isSuccess
 
-    return result.isSuccess
+    trade_points = result.result
+    print(trade_points)
+
+    return True
 
 
 if __name__ == "__main__":
