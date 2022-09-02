@@ -1,0 +1,9 @@
+Todo / wish list
+- Write unit tests
+- Decouple TradingAlgorithm class from the knowledge of CSV file structure
+- Read runtime-arguments from config file (json/yaml), instead of from the command line
+- Use multiprocessing for parallel computing
+- Avoid reading up all the rows from CSV files
+- It would be better if TradingAlgorithms constructor raised exception!
+- Make explanation of individual algorithms visible to the user.
+  Serve individual algorithm's doc string with some new command-line switch.

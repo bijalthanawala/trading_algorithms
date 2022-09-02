@@ -48,7 +48,7 @@ class TradingAlgorithms:
         return result
 
     def run(self, algorithm_choice) -> List[TradePoint]:
-        # TODO: find better way to do this
+        # TODO: Find better way to do this, so that we do not have call this method with 'self' explicitly
         return self.ALGORITHMS()[algorithm_choice](self)
 
     # Allow only kwargs and avoid possible errors
@@ -97,6 +97,10 @@ class TradingAlgorithms:
             max_price_in_purchase_range: float = 0.0
             max_price_offset: int = 0
             best_market_condition: MarketCondition
+            # TODO: This part of finding maximum can use some improvements
+            #       by using some knowledge from previous iteration
+            #       However, the profit-making ability of this particular algorithm
+            #       is so low that this improvement is not justified
             for i in range(purchase_range_min, purchase_range_max):
                 if self.market_conditions[i].price > max_price_in_purchase_range:
                     max_price_in_purchase_range = self.market_conditions[i].price
