@@ -5,14 +5,11 @@ from market_condition import MarketCondition
 class TradePoint:
     UNDETERMINED: float = float("inf")
 
-    def __init__(self, purchase_point: MarketCondition):
+    def __init__(self, purchase_point: MarketCondition, sell_point: MarketCondition):
         self.purchase_point: MarketCondition
-        self.sell_point: Union[MarketCondition, None]
+        self.sell_point: MarketCondition
 
         self.purchase_point = purchase_point
-        self.sell_point = None
-
-    def sell_point_determined(self, sell_point: MarketCondition):
         self.sell_point = sell_point
 
     def __repr__(self):

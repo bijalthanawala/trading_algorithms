@@ -68,8 +68,10 @@ class TradingAlgorithms:
                     max_price_in_purchase_range = market_conditions[i].price
                     best_market_condition = market_conditions[i]
             if max_price_in_purchase_range > market_conditions[curr_offset].price:
-                trade_point = TradePoint(market_conditions[curr_offset])
-                trade_point.sell_point_determined(best_market_condition)
+                trade_point = TradePoint(
+                    purchase_point=market_conditions[curr_offset],
+                    sell_point=best_market_condition,
+                )
                 trade_points.append(trade_point)
                 curr_offset = i + 1
             else:
@@ -91,8 +93,6 @@ class TradingAlgorithms:
             prev_offset + step
         ]  # TODO: boundary check
         potent_purchase_point = None
-        purchase_point = None
-        sell_point = None
         while market_condition_curr:
             if market_condition_curr.price > market_condition_prev.price:
                 prev_offset = prev_offset + step
@@ -103,10 +103,10 @@ class TradingAlgorithms:
                 if potent_purchase_point and (
                     potent_purchase_point is not market_condition_prev
                 ):
-                    purchase_point = potent_purchase_point
-                    sell_point = market_condition_prev
-                    trade_point = TradePoint(purchase_point)
-                    trade_point.sell_point_determined(sell_point)
+                    trade_point = TradePoint(
+                        purchase_point=potent_purchase_point,
+                        sell_point=market_condition_prev,
+                    )
                     trade_points.append(trade_point)
                     potent_purchase_point = None
                     step = self.min_hold
