@@ -1,10 +1,9 @@
-from typing import List, Dict
+from typing import List, Dict, Tuple, Any
 import pprint
 import logging
 
 from result import Result
 from market_condition import MarketCondition
-from stock_prices import StockPrices
 from csv_util import ColumnTranslation, read_csv_file
 from trade_point import TradePoint
 
@@ -34,9 +33,9 @@ class TradingAlgorithms:
         self.min_hold: int = self.DEFAULT_MIN_HOLD_MINUTES
         self.max_hold: int = self.DEFAULT_MAX_HOLD_MINUTES
         self.init_result: Result = self.read_market_conditions(csv_filename)
-        # TODO: It would be better if TradingAlgorithms constructor raised exception if read_stock_prices failed!
-        # TODO: If the number of stock_prices < min_hold, then flag the error
-        self.stock_prices = StockPrices(market_conditions=self.init_result.result)
+        # TODO: It would be better if TradingAlgorithms constructor raised exception if read_market_conditions failed!
+        # TODO: If the number of market_conditions < min_hold, then flag the error
+        self.market_conditions: List[MarketCondition] = self.init_result.result
 
     def read_market_conditions(self, csv_filename) -> Result:
         column_translations = [
@@ -51,6 +50,14 @@ class TradingAlgorithms:
     def run(self, algorithm_choice) -> List[TradePoint]:
         # TODO: find better way to do this
         return self.ALGORITHMS()[algorithm_choice](self)
+
+    # Allow only kwargs and avoid possible errors
+    def get_purchase_range(
+        self, *, curr_offset: int, num_market_conditions: int
+    ) -> Tuple[int, int]:
+        purchase_range_min = curr_offset + self.min_hold
+        purchase_range_max = min(curr_offset + self.max_hold + 1, num_market_conditions)
+        return (purchase_range_min, purchase_range_max)
 
     def algorithm_least_purchases(self) -> List[TradePoint]:
         """
@@ -75,38 +82,37 @@ class TradingAlgorithms:
         """
         logging.info("Running: Algorithm of least purchases")
         trade_points: List[TradePoint] = []
-        market_conditions = self.stock_prices.market_conditions
 
         # Step A
         curr_offset = 0
-        while curr_offset + self.min_hold < len(market_conditions):
+        while curr_offset + self.min_hold < len(self.market_conditions):
 
             # Step B
-            purchase_range_min = curr_offset + self.min_hold
-            purchase_range_max = min(
-                curr_offset + self.max_hold + 1, len(market_conditions)
+            purchase_range_min, purchase_range_max = self.get_purchase_range(
+                curr_offset=curr_offset,
+                num_market_conditions=len(self.market_conditions),
             )
 
             # Step C
-            max_price_in_purchase_range = 0
-            max_price_offset = 0
+            max_price_in_purchase_range: float = 0.0
+            max_price_offset: int = 0
             best_market_condition: MarketCondition
             for i in range(purchase_range_min, purchase_range_max):
-                if market_conditions[i].price > max_price_in_purchase_range:
-                    max_price_in_purchase_range = market_conditions[i].price
+                if self.market_conditions[i].price > max_price_in_purchase_range:
+                    max_price_in_purchase_range = self.market_conditions[i].price
                     max_price_offset = i
-                    best_market_condition = market_conditions[i]
+                    best_market_condition = self.market_conditions[i]
 
             logging.debug(
-                f"algorithm_least_purchases: Current price at {curr_offset:03d}={market_conditions[curr_offset].price:.04f}, "
+                f"algorithm_least_purchases: Current price at {curr_offset:03d}={self.market_conditions[curr_offset].price:.04f}, "
                 f"Range({purchase_range_min:03d}-{purchase_range_max-1:03d}) has max={max_price_in_purchase_range:.4f} "
                 f"@ minute {max_price_offset:03d}"
             )
 
-            if max_price_in_purchase_range > market_conditions[curr_offset].price:
+            if max_price_in_purchase_range > self.market_conditions[curr_offset].price:
                 # Step D
                 trade_point = TradePoint(
-                    purchase_point=market_conditions[curr_offset],
+                    purchase_point=self.market_conditions[curr_offset],
                     sell_point=best_market_condition,
                 )
                 trade_points.append(trade_point)
@@ -140,36 +146,38 @@ class TradingAlgorithms:
         """
         logging.info("Running: Algorithm of quick purchases")
         trade_points: List[TradePoint] = []
-        market_conditions = self.stock_prices.market_conditions
 
         # Step A
         curr_offset = 0
-        while curr_offset + self.min_hold < len(market_conditions):
+        while curr_offset + self.min_hold < len(self.market_conditions):
 
             # Step B
-            purchase_range_min = curr_offset + self.min_hold
-            purchase_range_max = min(
-                curr_offset + self.max_hold + 1, len(market_conditions)
+            purchase_range_min, purchase_range_max = self.get_purchase_range(
+                curr_offset=curr_offset,
+                num_market_conditions=len(self.market_conditions),
             )
 
             # Step C
             first_greater_price_offset = 0
             sell_market_condition: MarketCondition
             for i in range(purchase_range_min, purchase_range_max):
-                if market_conditions[i].price > market_conditions[curr_offset].price:
+                if (
+                    self.market_conditions[i].price
+                    > self.market_conditions[curr_offset].price
+                ):
                     first_greater_price_offset = i
-                    sell_market_condition = market_conditions[i]
+                    sell_market_condition = self.market_conditions[i]
                     break
 
             if first_greater_price_offset:
                 logging.debug(
-                    f"algorithm_quick_purchases: Current price at {curr_offset:03d}={market_conditions[curr_offset].price:.04f}, "
+                    f"algorithm_quick_purchases: Current price at {curr_offset:03d}={self.market_conditions[curr_offset].price:.04f}, "
                     f"Range({purchase_range_min:03d}-{purchase_range_max-1:03d}) has first greater={sell_market_condition.price:.4f} "
                     f"@ minute {first_greater_price_offset:03d}"
                 )
                 # Step D
                 trade_point = TradePoint(
-                    purchase_point=market_conditions[curr_offset],
+                    purchase_point=self.market_conditions[curr_offset],
                     sell_point=sell_market_condition,
                 )
                 trade_points.append(trade_point)
@@ -178,7 +186,7 @@ class TradingAlgorithms:
             else:
                 # Step F
                 logging.debug(
-                    f"algorithm_quick_purchases: Current price at {curr_offset:03d}={market_conditions[curr_offset].price:.04f}, "
+                    f"algorithm_quick_purchases: Current price at {curr_offset:03d}={self.market_conditions[curr_offset].price:.04f}, "
                     f"could not find next greater price in the Range({purchase_range_min:03d}-{purchase_range_max:03d})"
                 )
                 curr_offset += 1
@@ -193,8 +201,8 @@ class TradingAlgorithms:
         trade_points: List[TradePoint] = []
         prev_offset = 0
         step = self.min_hold
-        market_condition_prev = self.stock_prices.market_conditions[prev_offset]
-        market_condition_curr = self.stock_prices.market_conditions[
+        market_condition_prev: Any = self.market_conditions[prev_offset]
+        market_condition_curr: Any = self.market_conditions[
             prev_offset + step
         ]  # TODO: boundary check
         potent_purchase_point = None
@@ -218,13 +226,13 @@ class TradingAlgorithms:
                 prev_offset += 1
 
             market_condition_prev = (
-                self.stock_prices.market_conditions[prev_offset]
-                if prev_offset < len(self.stock_prices.market_conditions)
+                self.market_conditions[prev_offset]
+                if prev_offset < len(self.market_conditions)
                 else None
             )
             market_condition_curr = (
-                self.stock_prices.market_conditions[prev_offset + step]
-                if (prev_offset + step) < len(self.stock_prices.market_conditions)
+                self.market_conditions[prev_offset + step]
+                if (prev_offset + step) < len(self.market_conditions)
                 else None
             )
             # logging.debug(f"{market_condition_prev=} {market_condition_curr=}")
