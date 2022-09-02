@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple
+from typing import List, Dict
 import pprint
 import logging
 
@@ -47,11 +47,11 @@ class TradingAlgorithms:
         )
         return result
 
-    def run(self, algorithm_choice):
+    def run(self, algorithm_choice) -> List[TradePoint]:
         # TODO: find better way to do this
-        self.ALGORITHMS()[algorithm_choice](self)
+        return self.ALGORITHMS()[algorithm_choice](self)
 
-    def algorithm_least_purchases(self):
+    def algorithm_least_purchases(self) -> List[TradePoint]:
         logging.info("Running: Algorithm of least purchases")
         curr_offset = 0
         market_conditions = self.stock_prices.market_conditions
@@ -62,7 +62,7 @@ class TradingAlgorithms:
                 curr_offset + self.max_hold + 1, len(market_conditions)
             )
             max_price_in_purchase_range = 0
-            best_market_condition = None
+            best_market_condition: MarketCondition
             for i in range(purchase_range_min, purchase_range_max):
                 if market_conditions[i].price > max_price_in_purchase_range:
                     max_price_in_purchase_range = market_conditions[i].price
@@ -76,8 +76,9 @@ class TradingAlgorithms:
                 curr_offset += 1
 
         logging.debug(f"{pprint.pformat(trade_points)=}")
+        return trade_points
 
-    def algorithm_most_purchases(self):
+    def algorithm_most_purchases(self) -> List[TradePoint]:
         # TODO: This algorithm is incomplete (does not honor the max hold limit).
         #       The current implement is too complex to read and understand.
         #       Can be re-implemented.
@@ -124,7 +125,10 @@ class TradingAlgorithms:
             # logging.debug(f"{market_condition_prev=} {market_condition_curr=}")
 
         logging.debug(f"{pprint.pformat(trade_points)=}")
+        return trade_points
 
-    def algorithm_new_unimplemented(self):
+    def algorithm_new_unimplemented(self) -> List[TradePoint]:
         logging.info("algorithm_new_unimplemented")
         print("This algorithm is not yet implemented")
+        trade_points: List[TradePoint] = []
+        return trade_points

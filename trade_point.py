@@ -16,7 +16,7 @@ class TradePoint:
         self.sell_point = sell_point
 
     def __repr__(self):
-        return f"Purchase@{self.purchase_point} Sell@{self.sell_point} Profit={self.profit} Duration={self.duration_held}"
+        return f"Open at {self.purchase_point}, close {self.sell_point} (hold for {self.duration_held:03d} minutes) for profit {self.profit:.4f}"
 
     @property
     def profit(self):

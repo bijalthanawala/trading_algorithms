@@ -5,6 +5,7 @@ import pprint
 from typing import List
 
 from result import Result
+from trade_point import TradePoint
 from trading_algorithms import TradingAlgorithms
 
 DEFAULT_CSV_FILENAME = "data_10.csv"
@@ -56,7 +57,13 @@ def main(sys_argv: List[str]) -> bool:
         print("Please fix the above error and rerun")
         return result.isSuccess
 
-    trading_algorithms.run(parsed_args.algorithm)
+    trading_points: List[TradePoint] = trading_algorithms.run(parsed_args.algorithm)
+    total_profit: float = 0.0
+    print("Trades are:")
+    for tp in trading_points:
+        total_profit += tp.profit
+        print(tp)
+    print(f"Total profit {total_profit:.4f}")
 
     return True
 

@@ -27,8 +27,8 @@ def read_csv_file(
         ) as csvfile:
             reader = csv.DictReader(csvfile)
             line_number = 2  # The very first line is the header
+
             for row in reader:
-                logging.debug(row)
                 if len(row) != len(column_translations):
                     return Result(
                         False,
@@ -36,6 +36,7 @@ def read_csv_file(
                         result=None,
                     )
 
+                # Tranform this CSV row dict into object of desired type
                 # TODO: Replace this dict comprehension with code that is readable, and which can catch the missing header condition accurately
                 row_object = row_object_type(
                     **{
@@ -48,7 +49,6 @@ def read_csv_file(
                         for translation in column_translations
                     }
                 )
-                logging.debug(row_object)
                 row_objects.append(row_object)
                 line_number += 1
     except Exception as ex:
@@ -60,6 +60,5 @@ def read_csv_file(
         return Result(isSuccess=False, message=message, result=None)
 
     logging.info(f"Read {len(row_objects)} rows")
-    logging.debug(row_objects)
 
     return Result(isSuccess=True, message="", result=row_objects)
