@@ -5,6 +5,8 @@ import pprint
 from typing import List
 
 from result import Result
+from csv_util import ColumnTranslation, read_csv_file
+from market_condition import MarketCondition
 from trade_point import TradePoint
 from trading_algorithms import TradingAlgorithms
 
@@ -44,18 +46,30 @@ def setup_logger(verbosity: int) -> None:
     logging.basicConfig(format="%(message)s", level=level_to_set)
 
 
+def read_market_conditions(csv_filename) -> Result:
+    column_translations = [
+        ColumnTranslation("Time", "minute", int),
+        ColumnTranslation("Price", "price", float),
+    ]
+    result = read_csv_file(
+        csv_filename, column_translations, row_object_type=MarketCondition
+    )
+    # TODO: If the number of market_conditions < min_hold, then flag the error
+    return result
+
+
 def main(sys_argv: List[str]) -> bool:
     parsed_args = parse_arguments(sys_argv[1:])
     setup_logger(parsed_args.verbose)
 
-    trading_algorithms = TradingAlgorithms(parsed_args.file)
-    result = trading_algorithms.init_result
-
-    # TODO: It would be better if TradingAlgorithms constructor raised exception!
+    result = read_market_conditions(csv_filename=parsed_args.file)
     if not result.isSuccess:
         print(f"Error encountered: {result.message}")
         print("Please fix the above error and rerun")
         return result.isSuccess
+
+    market_conditions: List[MarketCondition] = result.result
+    trading_algorithms = TradingAlgorithms(market_conditions)
 
     trading_points: List[TradePoint] = trading_algorithms.run(parsed_args.algorithm)
     total_profit: float = 0.0

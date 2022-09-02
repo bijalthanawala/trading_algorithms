@@ -4,7 +4,6 @@ import logging
 
 from result import Result
 from market_condition import MarketCondition
-from csv_util import ColumnTranslation, read_csv_file
 from trade_point import TradePoint
 
 
@@ -29,23 +28,10 @@ class TradingAlgorithms:
             for algo_num, algo_method in algorithms.items()
         }
 
-    def __init__(self, csv_filename):
+    def __init__(self, market_conditions: List[MarketCondition]):
         self.min_hold: int = self.DEFAULT_MIN_HOLD_MINUTES
         self.max_hold: int = self.DEFAULT_MAX_HOLD_MINUTES
-        self.init_result: Result = self.read_market_conditions(csv_filename)
-        # TODO: It would be better if TradingAlgorithms constructor raised exception if read_market_conditions failed!
-        # TODO: If the number of market_conditions < min_hold, then flag the error
-        self.market_conditions: List[MarketCondition] = self.init_result.result
-
-    def read_market_conditions(self, csv_filename) -> Result:
-        column_translations = [
-            ColumnTranslation("Time", "minute", int),
-            ColumnTranslation("Price", "price", float),
-        ]
-        result = read_csv_file(
-            csv_filename, column_translations, row_object_type=MarketCondition
-        )
-        return result
+        self.market_conditions: List[MarketCondition] = market_conditions
 
     def run(self, algorithm_choice) -> List[TradePoint]:
         # TODO: Find better way to do this, so that we do not have call this method with 'self' explicitly
@@ -97,7 +83,7 @@ class TradingAlgorithms:
             max_price_in_purchase_range: float = 0.0
             max_price_offset: int = 0
             best_market_condition: MarketCondition
-            # TODO: This part of finding maximum can use some improvements
+            # TODO: This part of finding maximum in a range can use some improvements
             #       by using some knowledge from previous iteration
             #       However, the profit-making ability of this particular algorithm
             #       is so low that this improvement is not justified
