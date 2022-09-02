@@ -50,6 +50,7 @@ def main(sys_argv: List[str]) -> bool:
     trading_algorithms = TradingAlgorithms(parsed_args.file)
     result = trading_algorithms.init_result
 
+    # TODO: It would be better if TradingAlgorithms constructor raised exception!
     if not result.isSuccess:
         print(f"Error encountered: {result.message}")
         print("Please fix the above error and rerun")

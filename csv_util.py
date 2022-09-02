@@ -36,7 +36,7 @@ def read_csv_file(
                         result=None,
                     )
 
-                # todo: Replace this dict comprehension with code that is readable, and which can catch the missing header condition accurately
+                # TODO: Replace this dict comprehension with code that is readable, and which can catch the missing header condition accurately
                 row_object = row_object_type(
                     **{
                         translation.column_name_xlat: translation.column_type(

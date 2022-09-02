@@ -1,19 +1,22 @@
 from typing import Union
-from stock_price import StockPrice
+from market_condition import MarketCondition
 
 
 class TradePoint:
     UNDETERMINED: float = float("inf")
 
-    def __init__(self, purchase_point: StockPrice):
-        self.purchase_point: StockPrice
-        self.sell_point: Union[StockPrice, None]
+    def __init__(self, purchase_point: MarketCondition):
+        self.purchase_point: MarketCondition
+        self.sell_point: Union[MarketCondition, None]
 
         self.purchase_point = purchase_point
         self.sell_point = None
 
-    def sell_point_determined(self, sell_point: StockPrice):
+    def sell_point_determined(self, sell_point: MarketCondition):
         self.sell_point = sell_point
+
+    def __repr__(self):
+        return f"Purchase@{self.purchase_point} Sell@{self.sell_point} Profit={self.profit} Duration={self.duration_held}"
 
     @property
     def profit(self):
