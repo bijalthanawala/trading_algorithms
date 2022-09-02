@@ -52,32 +52,68 @@ class TradingAlgorithms:
         return self.ALGORITHMS()[algorithm_choice](self)
 
     def algorithm_least_purchases(self) -> List[TradePoint]:
+        """
+        Steps for the Least Purchase algorithm.
+        Step A) Starting with the very first minute M
+        Step B) Determine the allowed sell time-window for that minute
+        Step C) In that range find the maximum price
+        Step D) If the found maximum price (say at minute N), is greater then the price at minute M then
+                perform the trade i.e. buy at M and sell at N
+        Step E) If the trade was performed, skip to the minute N+1 and goto Step B
+        Step F) If the trade was not performed, continue with minute M+1, and goto Step B
+
+        PRO:
+        - Easy to understand
+        - Easy to implement
+
+        CONS:
+        - This algorithm is very inefficient at profit-making because it does not buy-sell often.
+        - This algorithm culd also be very slow-performing in the following case:
+            If the prices are constantly or mostly declinung then Step C would end up finding maximum price
+            in consecutive overlapping time-ranges
+        """
         logging.info("Running: Algorithm of least purchases")
-        curr_offset = 0
-        market_conditions = self.stock_prices.market_conditions
         trade_points: List[TradePoint] = []
+        market_conditions = self.stock_prices.market_conditions
+
+        # Step A
+        curr_offset = 0
         while curr_offset + self.min_hold < len(market_conditions):
+
+            # Step B
             purchase_range_min = curr_offset + self.min_hold
             purchase_range_max = min(
                 curr_offset + self.max_hold + 1, len(market_conditions)
             )
+
+            # Step C
             max_price_in_purchase_range = 0
+            max_price_offset = 0
             best_market_condition: MarketCondition
             for i in range(purchase_range_min, purchase_range_max):
                 if market_conditions[i].price > max_price_in_purchase_range:
                     max_price_in_purchase_range = market_conditions[i].price
+                    max_price_offset = i
                     best_market_condition = market_conditions[i]
+
+            # Step D
+            logging.debug(
+                f"algorithm_least_purchases: Price at {curr_offset:03d}={market_conditions[curr_offset].price:.04f}, "
+                f"Range({purchase_range_min:03d}-{purchase_range_max:03d}) has max={max_price_in_purchase_range:.4f} "
+                f"@ minute {max_price_offset:03d}"
+            )
             if max_price_in_purchase_range > market_conditions[curr_offset].price:
                 trade_point = TradePoint(
                     purchase_point=market_conditions[curr_offset],
                     sell_point=best_market_condition,
                 )
                 trade_points.append(trade_point)
-                curr_offset = i + 1
+                # Step E
+                curr_offset = max_price_offset + 1
             else:
+                # Step F
                 curr_offset += 1
 
-        logging.debug(f"{pprint.pformat(trade_points)=}")
         return trade_points
 
     def algorithm_most_purchases(self) -> List[TradePoint]:
@@ -124,7 +160,6 @@ class TradingAlgorithms:
             )
             # logging.debug(f"{market_condition_prev=} {market_condition_curr=}")
 
-        logging.debug(f"{pprint.pformat(trade_points)=}")
         return trade_points
 
     def algorithm_new_unimplemented(self) -> List[TradePoint]:

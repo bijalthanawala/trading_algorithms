@@ -7,4 +7,4 @@ class MarketCondition:
     price: str
 
     def __repr__(self):
-        return f"{self.minute:03d}({self.price:.4f})"
+        return f"{self.minute:05d}({self.price:.4f})"
