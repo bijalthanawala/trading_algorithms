@@ -15,23 +15,43 @@ Rules:
 
 ```
 python3 main.py --help
-usage: main.py [-h] [--file FILE] [--algorithm {least,quick,most,new}] [--verbose]
+usage: main.py [-h] [--file FILE] [--algorithm {highest,higher,max,new}] [--verbose]
 
 Trading Algorithm
 
 optional arguments:
   -h, --help            show this help message and exit
   --file FILE, -f FILE  Name of the input CSV file (Default=test/market_conditions_100.csv)
-  --algorithm {least,quick,most,new}, -a {least,quick,most,new}
-                        Algorithm short name (Default=least)
-                        {'least': 'algorithm_least_purchases',
-                         'most': 'algorithm_most_purchases',
-                         'new': 'algorithm_new_unimplemented',
-                         'quick': 'algorithm_quick_purchases'}
+  --algorithm {highest,higher,max,new}, -a {highest,higher,max,new}
+                        Algorithm short name (Default=highest)
+                        ['highest = algorithm_purchase_next_highest',
+                         'higher = algorithm_purchase_next_higher',
+                         'max = algorithm_purchase_max',
+                         'new = algorithm_new_unimplemented']
   --verbose, -v
- ```
- 
+```
+
+
+#### Example command
+
+```
+python3 main.py --verbose --file test/market_conditions_100.csv --algorithm highest
+```
+
+#### Output of the example command above
+```
+Reading CSV file: test/market_conditions_100.csv
+Read 100 rows
+Running: Algorithm of purchasing the local highest
+Trades are:
+Open at 00000(1.0708), close 00032(1.3804) (hold for 031 minutes) for profit 0.3096
+Open at 00033(1.2676), close 00064(1.4465) (hold for 030 minutes) for profit 0.1789
+Open at 00065(1.0278), close 00096(1.3693) (hold for 030 minutes) for profit 0.3415
+Total profit 0.8300
+```
+
 -----------------------
+
 
 ## Sample of CSV data file:
 
