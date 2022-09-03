@@ -10,21 +10,20 @@ Rules:
 
 USAGE:
 python3 main.py --help
-usage: main.py [-h] [--file FILE] [--algorithm {1,2,3,4}] [--verbose]
+usage: main.py [-h] [--file FILE] [--algorithm {least,quick,most,new}] [--verbose]
 
 Trading Algorithm
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
-  --file FILE, -f FILE  Name of the input CSV file (Default=data_10.csv)
-  --algorithm {1,2,3,4}, -a {1,2,3,4}
-                        Specify one of the algorithm numbers (Default=1)
-                        {1: 'algorithm_least_purchases',
-                         2: 'algorithm_quick_purchases',
-                         3: 'algorithm_most_purchases',
-                         4: 'algorithm_new_unimplemented'}
+  --file FILE, -f FILE  Name of the input CSV file (Default=test/market_conditions_100.csv)
+  --algorithm {least,quick,most,new}, -a {least,quick,most,new}
+                        Algorithm short name (Default=least)
+                        {'least': 'algorithm_least_purchases',
+                         'most': 'algorithm_most_purchases',
+                         'new': 'algorithm_new_unimplemented',
+                         'quick': 'algorithm_quick_purchases'}
   --verbose, -v
-
 -----------------------
 
 Sample of CSV data file:
@@ -35,6 +34,15 @@ Time,Price
 3,1.1012
 
 -----------------------
+
+UNIT TEST:
+
+Run the unitests by running the following command in the root directory of the project
+
+python3 -m unittest1
+
+-----------------------
+
 
 
 Read the accompanied todo.txt for pending items and wishlist of improvements
