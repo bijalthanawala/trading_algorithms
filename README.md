@@ -52,8 +52,9 @@ Total profit 0.8300
 
 -----------------------
 
+## CSV FILE
 
-## Sample of CSV data file:
+#### Sample of CSV data file:
 
 ```
 Time,Price
@@ -70,19 +71,28 @@ Time,Price
 Run the unitests by running the following command in the root directory of the project
 
 ```
-python3 -m unittest
+python3 -m unittest --verbose
 ```
 
 #### OR
 
+##### Run the unit tests with coverage[^1]
 ```
-coverage run -m unittest
-coverage report -m
+coverage run --branch --module unittest --verbose
+coverage report --show-missing --omit=test/*
 coverage html # (Then view htmlcov/index.html in the browser)
 ```
 
 -----------------------
 
-
+## TODO
 
 Read the accompanied todo.txt for pending items and wishlist of improvements
+
+
+-----------------------
+
+[^1]: Install *coverage* like so if it is already not (preferably in a Python virtual environment)
+  ```
+  pip install coverage
+  ```
