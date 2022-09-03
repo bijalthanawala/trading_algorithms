@@ -39,8 +39,13 @@ UNIT TEST:
 
 Run the unitests by running the following command in the root directory of the project
 
-python3 -m unittest1
+python3 -m unittest
 
+OR
+
+coverage run -m unittest
+coverage report -m
+coverage html # (Then view htmlcov/index.html in the browser)
 -----------------------
 
 
