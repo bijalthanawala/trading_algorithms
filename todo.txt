@@ -10,7 +10,4 @@ Performance and resource usage
 Configurability
 - Read runtime-arguments from config file (json/yaml), instead of from the command line
 - Make minimum and maximum hold-times configurable at command-line
-
-Usability
-- Make explanation of individual algorithms visible to the user.
   i.e. Design a new command-line switch to show individual algorithm's doc string
