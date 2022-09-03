@@ -14,10 +14,10 @@ class TradingAlgorithms:
     @classmethod
     def ALGORITHMS(cls) -> Dict:
         return {
-            1: cls.algorithm_least_purchases,
-            2: cls.algorithm_quick_purchases,
-            3: cls.algorithm_most_purchases,
-            4: cls.algorithm_new_unimplemented,
+            "least": cls.algorithm_least_purchases,
+            "quick": cls.algorithm_quick_purchases,
+            "most": cls.algorithm_most_purchases,
+            "new": cls.algorithm_new_unimplemented,
         }
 
     @classmethod

@@ -11,6 +11,7 @@ from src.trade_point import TradePoint
 from src.trading_algorithms import TradingAlgorithms
 
 DEFAULT_CSV_FILENAME = "test/market_conditions_100.csv"
+DEFAULT_ALGORITHM = "least"
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
@@ -27,10 +28,9 @@ def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
     parser.add_argument(
         "--algorithm",
         "-a",
-        type=int,
-        default=1,
+        default=DEFAULT_ALGORITHM,
         choices=algorithm_choices.keys(),
-        help=f"Specify one of the algorithm numbers (Default=1)\n{pprint.pformat(algorithm_choices)}",
+        help=f"Algorithm short name (Default={DEFAULT_ALGORITHM})\n{pprint.pformat(algorithm_choices)}",
     )
     parser.add_argument("--verbose", "-v", action="count", default=0)
     parsed_args = parser.parse_args(unparsed_args)
