@@ -1,5 +1,5 @@
 from typing import List, Dict, Tuple, Any
-import pprint
+from collections import OrderedDict
 import logging
 
 from .result import Result
@@ -13,20 +13,20 @@ class TradingAlgorithms:
 
     @classmethod
     def ALGORITHMS(cls) -> Dict:
-        return {
-            "max": cls.algorithm_purchase_max,
-            "higher": cls.algorithm_purchase_next_higher,
-            "highest": cls.algorithm_purchase_next_highest,
-            "new": cls.algorithm_new_unimplemented,
-        }
+        algorithms = OrderedDict()
+        algorithms["highest"] = cls.algorithm_purchase_next_highest
+        algorithms["higher"] = cls.algorithm_purchase_next_higher
+        algorithms["max"] = cls.algorithm_purchase_max
+        algorithms["new"] = cls.algorithm_new_unimplemented
+        return algorithms
 
     @classmethod
     def ALGORITHMS_CHOICES(cls) -> Dict:
         algorithms = cls.ALGORITHMS()
-        return {
-            algo_num: algo_method.__name__
-            for algo_num, algo_method in algorithms.items()
-        }
+        return OrderedDict(
+            (algo_short_name, algo_method.__name__)
+            for algo_short_name, algo_method in algorithms.items()
+        )
 
     def __init__(
         self, market_conditions: List[MarketCondition], min_hold=-1, max_hold=-1
@@ -84,7 +84,7 @@ class TradingAlgorithms:
             If the prices are constantly or mostly declining then Step C would end up finding maximum price
             in consecutive overlapping time-ranges
         """
-        logging.info("Running: Algorithm of least purchases")
+        logging.info("Running: Algorithm of purchasing always the max")
         trade_points: List[TradePoint] = []
 
         # Step A
@@ -152,7 +152,7 @@ class TradingAlgorithms:
             If the prices are constantly or mostly declining then Step C would end up exploring consecutive
             overlapping time-ranges
         """
-        logging.info("Running: Algorithm of quick purchases")
+        logging.info("Running: Algorithm of purchasing the very next higher")
         trade_points: List[TradePoint] = []
 
         # Step A
@@ -220,7 +220,7 @@ class TradingAlgorithms:
         CONS:
         - This profit-making strategy is still myopic
         """
-        logging.info("Running: Algorithm of max profit")
+        logging.info("Running: Algorithm of purchasing the local highest")
         trade_points: List[TradePoint] = []
 
         # Step A
