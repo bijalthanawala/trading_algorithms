@@ -69,7 +69,7 @@ def main(sys_argv: List[str]) -> bool:
         return result.isSuccess
 
     market_conditions: List[MarketCondition] = result.result
-    trading_algorithms = TradingAlgorithms(market_conditions)
+    trading_algorithms = TradingAlgorithms(market_conditions, min_hold=3, max_hold=6)
 
     trading_points: List[TradePoint] = trading_algorithms.run(parsed_args.algorithm)
     total_profit: float = 0.0

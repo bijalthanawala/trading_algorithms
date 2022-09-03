@@ -28,9 +28,18 @@ class TradingAlgorithms:
             for algo_num, algo_method in algorithms.items()
         }
 
-    def __init__(self, market_conditions: List[MarketCondition]):
-        self.min_hold: int = self.DEFAULT_MIN_HOLD_MINUTES
-        self.max_hold: int = self.DEFAULT_MAX_HOLD_MINUTES
+    def __init__(
+        self, market_conditions: List[MarketCondition], min_hold=0, max_hold=0
+    ):
+
+        # Accept caller-supplied min_hold and max_hold only if those are valid
+        if min_hold and max_hold and (min_hold >= max_hold):
+            min_hold = max_hold = 0
+
+        self.min_hold: int = min_hold if min_hold > 0 else self.DEFAULT_MIN_HOLD_MINUTES
+        self.max_hold: int = max_hold if max_hold > 0 else self.DEFAULT_MAX_HOLD_MINUTES
+
+        logging.debug(f"TradingAlgorithm: {self.min_hold=} {self.max_hold=}")
         self.market_conditions: List[MarketCondition] = market_conditions
 
     def run(self, algorithm_choice) -> List[TradePoint]:
