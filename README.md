@@ -1,6 +1,9 @@
-This is a simple exercise aimed at learning and practicing programming.
+[![unittest](https://github.com/bijalthanawala/trading_algorithms/actions/workflows/unittest.yml/badge.svg)](https://github.com/bijalthanawala/trading_algorithms/actions/workflows/unittest.yml)
 
-DESCRIPTION:
+
+### This is a simple exercise aimed at learning and practicing programming.
+
+## DESCRIPTION:
 This simple project determines time to buy and sell a single stock.
 Rules:
 - Only one unit of stock is bought at a time, is held between a minimum (30 minutes) and a maximum (60 minutes) period before selling
@@ -8,7 +11,9 @@ Rules:
 
 -----------------------
 
-USAGE:
+## USAGE:
+
+```
 python3 main.py --help
 usage: main.py [-h] [--file FILE] [--algorithm {least,quick,most,new}] [--verbose]
 
@@ -24,28 +29,38 @@ optional arguments:
                          'new': 'algorithm_new_unimplemented',
                          'quick': 'algorithm_quick_purchases'}
   --verbose, -v
+ ```
+ 
 -----------------------
 
-Sample of CSV data file:
+## Sample of CSV data file:
+
+```
 Time,Price
 0,1.1010
 1,1.1015
 2,1.1008
 3,1.1012
+```
 
 -----------------------
 
-UNIT TEST:
+## UNIT TEST:
 
 Run the unitests by running the following command in the root directory of the project
 
+```
 python3 -m unittest
+```
 
-OR
+#### OR
 
+```
 coverage run -m unittest
 coverage report -m
 coverage html # (Then view htmlcov/index.html in the browser)
+```
+
 -----------------------
 
 
