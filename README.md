@@ -1,9 +1,9 @@
 [![unittest](https://github.com/bijalthanawala/trading_algorithms/actions/workflows/unittest.yml/badge.svg)](https://github.com/bijalthanawala/trading_algorithms/actions/workflows/unittest.yml)
 
 
-### This is a simple exercise aimed at learning and practicing programming.
+#### This is a simple exercise aimed at learning and practicing programming.
 
-## DESCRIPTION:
+## DESCRIPTION
 This simple project determines time to buy and sell a single stock.
 
 Rules:
@@ -12,7 +12,7 @@ Rules:
 
 -----------------------
 
-## USAGE:
+### USAGE
 
 #### In its simplest form, run the following command in the root directory of the project.
 ```
@@ -61,7 +61,7 @@ Total profit 0.8300
 
 -----------------------
 
-## CSV FILE:
+### CSV FILE
 
 #### Sample of CSV data file:
 
@@ -75,7 +75,7 @@ Time,Price
 
 -----------------------
 
-## UNIT TEST:
+### UNIT TEST
 
 Run the unitests by running the following command in the root directory of the project
 
@@ -94,11 +94,12 @@ coverage html # (Then view htmlcov/index.html in the browser)
 
 -----------------------
 
-## TODO
+### TODO
 
 Read the accompanied todo.txt for pending items and wishlist of improvements
 
 
 [^1]: Install *coverage* like with the following command if it is already not (preferably in a Python virtual environment).
-    pip install coverage
+
+    ```pip install coverage```
 
