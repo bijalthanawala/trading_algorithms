@@ -85,7 +85,7 @@ python3 -m unittest --verbose
 
 #### OR
 
-##### Run the unit tests with coverage[^1]
+##### Run the unit tests with coverage[^coverage]
 ```
 coverage run --branch --module unittest --verbose
 coverage report --show-missing --omit=test/*
@@ -94,12 +94,33 @@ coverage html # (Then view htmlcov/index.html in the browser)
 
 -----------------------
 
+### CONTRIBUTE
+
+Follow these steps to make contribution easier:
+- Install and **activate** Python virtual environment[^venv]
+- Install *pip* packages required by this project [^requirements]
+- Activate the *pre-commit* hooks[^pre-commit]
+
+-----------------------
+
+
 ### TODO
 
 Read the accompanied todo.txt for pending items and wishlist of improvements
 
 
-[^1]: Install *coverage* like with the following command if it is already not (preferably in a Python virtual environment).
+[^coverage]: Install *coverage* like with the following command if it is already not (preferably in a Python virtual environment):
 
     ```pip install coverage```
 
+[^venv]: Follow these instructions to install virtual environment: https://docs.python.org/3/library/venv.html
+
+[^requirements]: Run the following command to install required *pip* packages:
+
+    ```pip install --requirement requirements.txt```
+
+[^pre-commit]: Run the following command to activate *pre-commit* hooks:
+
+    ```pre-commit install```
+
+    Read more about *pre-commit* here: https://pre-commit.com/
