@@ -1,8 +1,16 @@
 Todo / wish list
+
+Reliability
 - Write unit tests
-- Read runtime-arguments from config file (json/yaml), instead of from the command line
-- Use multiprocessing for parallel computing
+
+Performance and resource usage
+- Utilize multiprocessing
 - Avoid reading up all the rows from CSV files
-- It would be better if TradingAlgorithms constructor raised exception!
+
+Configurability
+- Read runtime-arguments from config file (json/yaml), instead of from the command line
+- Make minimum and maximum hold-times configurable at command-line
+
+Usability
 - Make explanation of individual algorithms visible to the user.
-  Serve individual algorithm's doc string with some new command-line switch.
+  i.e. Design a new command-line switch to show individual algorithm's doc string
