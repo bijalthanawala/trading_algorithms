@@ -2,7 +2,7 @@ from typing import List
 import logging
 import csv
 
-from result import Result
+from .result import Result
 
 
 class ColumnTranslation:

@@ -1,5 +1,6 @@
 from typing import Union
-from market_condition import MarketCondition
+
+from .market_condition import MarketCondition
 
 
 class TradePoint:

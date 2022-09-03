@@ -4,13 +4,13 @@ import logging
 import pprint
 from typing import List
 
-from result import Result
-from csv_util import ColumnTranslation, read_csv_file
-from market_condition import MarketCondition
-from trade_point import TradePoint
-from trading_algorithms import TradingAlgorithms
+from src.result import Result
+from src.csv_util import ColumnTranslation, read_csv_file
+from src.market_condition import MarketCondition
+from src.trade_point import TradePoint
+from src.trading_algorithms import TradingAlgorithms
 
-DEFAULT_CSV_FILENAME = "data_10.csv"
+DEFAULT_CSV_FILENAME = "test/market_conditions_100.csv"
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
@@ -69,7 +69,7 @@ def main(sys_argv: List[str]) -> bool:
         return result.isSuccess
 
     market_conditions: List[MarketCondition] = result.result
-    trading_algorithms = TradingAlgorithms(market_conditions, min_hold=3, max_hold=6)
+    trading_algorithms = TradingAlgorithms(market_conditions)
 
     trading_points: List[TradePoint] = trading_algorithms.run(parsed_args.algorithm)
     total_profit: float = 0.0

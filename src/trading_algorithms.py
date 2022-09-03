@@ -2,9 +2,9 @@ from typing import List, Dict, Tuple, Any
 import pprint
 import logging
 
-from result import Result
-from market_condition import MarketCondition
-from trade_point import TradePoint
+from .result import Result
+from .market_condition import MarketCondition
+from .trade_point import TradePoint
 
 
 class TradingAlgorithms:
@@ -38,9 +38,14 @@ class TradingAlgorithms:
 
         self.min_hold: int = min_hold if min_hold > 0 else self.DEFAULT_MIN_HOLD_MINUTES
         self.max_hold: int = max_hold if max_hold > 0 else self.DEFAULT_MAX_HOLD_MINUTES
-
-        logging.debug(f"TradingAlgorithm: {self.min_hold=} {self.max_hold=}")
         self.market_conditions: List[MarketCondition] = market_conditions
+
+        logging.debug(
+            f"TradingAlgorithms: Min hold time={self.min_hold} Max hold time={self.max_hold=}"
+        )
+        logging.debug(
+            f"TradingAlgorithms: Loading {len(market_conditions)} market conditions"
+        )
 
     def run(self, algorithm_choice) -> List[TradePoint]:
         # TODO: Find better way to do this, so that we do not have call this method with 'self' explicitly
