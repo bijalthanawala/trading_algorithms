@@ -27,5 +27,5 @@ class TradePoint:
     def duration_held(self):
         difference: float = self.UNDETERMINED
         if self.sell_point:
-            difference = self.sell_point.minute - self.purchase_point.minute
+            difference = self.sell_point.minute - self.purchase_point.minute - 1
         return difference

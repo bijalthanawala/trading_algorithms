@@ -55,7 +55,7 @@ class TradingAlgorithms:
     def get_purchase_range(
         self, *, curr_offset: int, num_market_conditions: int
     ) -> Tuple[int, int]:
-        purchase_range_min = curr_offset + self.min_hold
+        purchase_range_min = curr_offset + self.min_hold + 1
         purchase_range_max = min(curr_offset + self.max_hold + 1, num_market_conditions)
         return (purchase_range_min, purchase_range_max)
 
