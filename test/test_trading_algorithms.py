@@ -27,27 +27,27 @@ class TestTradingAlgorithms(unittest.TestCase):
         # print("tearDown: entry")
         pass
 
-    def test_trading_algorithm_least_purchase_min_hold_0(self):
+    def test_trading_algorithm_purchase_max_min_hold_0(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=0, max_hold=100
         )
-        trade_points: List[TradePoint] = trading_algorithms.run("least")
+        trade_points: List[TradePoint] = trading_algorithms.run("max")
         self.assertEqual(len(trade_points), 2)
         self.assertEqual(trade_points[0].sell_point.price, self.mk2.price)
         self.assertEqual(trade_points[1].sell_point.price, self.mk4.price)
 
-    def test_trading_algorithm_least_purchase_min_hold_1(self):
+    def test_trading_algorithm_purchase_max_min_hold_1(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=1, max_hold=100
         )
-        trade_points: List[TradePoint] = trading_algorithms.run("least")
+        trade_points: List[TradePoint] = trading_algorithms.run("max")
         self.assertEqual(len(trade_points), 1)
         self.assertEqual(trade_points[0].sell_point.price, self.mk4.price)
 
-    def test_trading_algorithm_least_purchase_min_hold_2(self):
+    def test_trading_algorithm_purchase_max_min_hold_2(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=2, max_hold=100
         )
-        trade_points: List[TradePoint] = trading_algorithms.run("least")
+        trade_points: List[TradePoint] = trading_algorithms.run("max")
         self.assertEqual(len(trade_points), 1)
         self.assertEqual(trade_points[0].sell_point.price, self.mk4.price)
