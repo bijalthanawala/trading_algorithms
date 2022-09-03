@@ -17,6 +17,7 @@ class TradingAlgorithms:
             "least": cls.algorithm_least_purchases,
             "quick": cls.algorithm_quick_purchases,
             "most": cls.algorithm_most_purchases,
+            "max": cls.algorithm_max_profit,
             "new": cls.algorithm_new_unimplemented,
         }
 
@@ -191,6 +192,87 @@ class TradingAlgorithms:
                 trade_points.append(trade_point)
                 # Step E
                 curr_offset = first_greater_price_offset + 1
+            else:
+                # Step F
+                logging.debug(
+                    f"algorithm_quick_purchases: Current price at {curr_offset:03d}={self.market_conditions[curr_offset].price:.04f}, "
+                    f"could not find next greater price in the Range({purchase_range_min:03d}-{purchase_range_max:03d})"
+                )
+                curr_offset += 1
+
+        return trade_points
+
+    def algorithm_max_profit(self) -> List[TradePoint]:
+        """
+        Steps for the Quick Purchase algorithm.
+        Step A) Starting with the very first minute M
+        Step B) Determine the allowed sell time-window for that minute
+        Step C) In that range find the first price (say at Minute M) that is greater than the price at the current minute
+        Step D) If such price was found perform the trade i.e. buy at M and sell at N
+        Step E) If the trade was performed, skip to the minute N+1 and goto Step B
+        Step F) If Step C could not find a price and the trade was not performed, then continue with minute M+1, and goto Step B
+
+        PRO:
+        - Easy to understand
+        - Easy to implement
+
+        CONS:
+        - This algorithm is inefficient at profit-making because it does not explore further better prices in the range
+        - This algorithm could also be very slow-performing in the following case:
+            If the prices are constantly or mostly declining then Step C would end up exploring consecutive
+            overlapping time-ranges
+        """
+        logging.info("Running: Algorithm of max profit")
+        trade_points: List[TradePoint] = []
+
+        # Step A
+        curr_offset = 0
+        while curr_offset + self.min_hold < len(self.market_conditions):
+
+            # Step B
+            purchase_range_min, purchase_range_max = self.get_purchase_range(
+                curr_offset=curr_offset,
+                num_market_conditions=len(self.market_conditions),
+            )
+
+            # Step C
+            local_max_price_offset = 0
+            sell_market_condition: MarketCondition
+            for i in range(purchase_range_min, purchase_range_max):
+                if (
+                    self.market_conditions[i].price
+                    > self.market_conditions[curr_offset].price
+                ):
+                    local_max_price_offset = i
+                    sell_market_condition = self.market_conditions[i]
+                    break
+
+            if local_max_price_offset:
+                i = i + 1
+                while i < purchase_range_max:
+                    if (
+                        self.market_conditions[i].price
+                        >= self.market_conditions[i - 1].price
+                    ):
+                        local_max_price_offset = i
+                        sell_market_condition = self.market_conditions[i]
+                    else:
+                        break
+                    i += 1
+
+                logging.debug(
+                    f"algorithm_max_profit: Current price at {curr_offset:03d}={self.market_conditions[curr_offset].price:.04f}, "
+                    f"Range({purchase_range_min:03d}-{purchase_range_max-1:03d}) has first greater={sell_market_condition.price:.4f} "
+                    f"@ minute {local_max_price_offset:03d}"
+                )
+                # Step D
+                trade_point = TradePoint(
+                    purchase_point=self.market_conditions[curr_offset],
+                    sell_point=sell_market_condition,
+                )
+                trade_points.append(trade_point)
+                # Step E
+                curr_offset = local_max_price_offset + 1
             else:
                 # Step F
                 logging.debug(
