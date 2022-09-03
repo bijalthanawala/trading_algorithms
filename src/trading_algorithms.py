@@ -29,15 +29,19 @@ class TradingAlgorithms:
         }
 
     def __init__(
-        self, market_conditions: List[MarketCondition], min_hold=0, max_hold=0
+        self, market_conditions: List[MarketCondition], min_hold=-1, max_hold=-1
     ):
 
         # Accept caller-supplied min_hold and max_hold only if those are valid
-        if min_hold and max_hold and (min_hold >= max_hold):
-            min_hold = max_hold = 0
+        if (min_hold == max_hold) or (min_hold >= max_hold):
+            min_hold = max_hold = -1
 
-        self.min_hold: int = min_hold if min_hold > 0 else self.DEFAULT_MIN_HOLD_MINUTES
-        self.max_hold: int = max_hold if max_hold > 0 else self.DEFAULT_MAX_HOLD_MINUTES
+        self.min_hold: int = (
+            min_hold if min_hold >= 0 else self.DEFAULT_MIN_HOLD_MINUTES
+        )
+        self.max_hold: int = (
+            max_hold if max_hold >= 0 else self.DEFAULT_MAX_HOLD_MINUTES
+        )
         self.market_conditions: List[MarketCondition] = market_conditions
 
         logging.debug(
