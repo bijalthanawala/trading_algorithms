@@ -5,6 +5,7 @@
 
 ## DESCRIPTION:
 This simple project determines time to buy and sell a single stock.
+
 Rules:
 - Only one unit of stock is bought at a time, is held between a minimum (30 minutes) and a maximum (60 minutes) period before selling
 - Buy and sell operations does not overlap
@@ -12,6 +13,14 @@ Rules:
 -----------------------
 
 ## USAGE:
+
+#### In its simplest form, run the following command in the root directory of the project.
+```
+python3 -m main.py
+```
+The above will run with run with detfult arguments
+
+#### See all the supported arguments with the *--help* switch
 
 ```
 python3 main.py --help
@@ -32,7 +41,7 @@ optional arguments:
 ```
 
 
-#### Example command
+#### An example command with arguments
 
 ```
 python3 main.py --verbose --file test/market_conditions_100.csv --algorithm highest
@@ -52,7 +61,7 @@ Total profit 0.8300
 
 -----------------------
 
-## CSV FILE
+## CSV FILE:
 
 #### Sample of CSV data file:
 
@@ -90,9 +99,6 @@ coverage html # (Then view htmlcov/index.html in the browser)
 Read the accompanied todo.txt for pending items and wishlist of improvements
 
 
------------------------
+[^1]: Install *coverage* like with the following command if it is already not (preferably in a Python virtual environment).
+    pip install coverage
 
-[^1]: Install *coverage* like so if it is already not (preferably in a Python virtual environment)
-  ```
-  pip install coverage
-  ```
