@@ -19,7 +19,6 @@ class TradingAlgorithms:
         algorithms["highest"] = cls.algorithm_purchase_next_highest
         algorithms["higher"] = cls.algorithm_purchase_next_higher
         algorithms["max"] = cls.algorithm_purchase_max
-        algorithms["new"] = cls.algorithm_new_unimplemented
         return algorithms
 
     @classmethod
@@ -55,7 +54,14 @@ class TradingAlgorithms:
         return self.ALGORITHMS()[algorithm_choice](self)
 
     def algorithm_buy_sell_adjacent_low_highs(self) -> List[TradePoint]:
-        # NOTE: Adjacents here respects the minimum hold time
+        """ "
+        Compare each price with the adjacent^ price
+        As soon as a surge in price is observed^^, purchase at the lower price
+        and sell at the higher.
+
+        ^Adjacent points here actually respects the minimum hold time
+        ^^Do not purchase and sell in the Same minutes
+        """
         logging.info("Running: Algorithm of buying and selling adjacent lows and highs")
         trade_points: List[TradePoint] = []
 
@@ -76,8 +82,18 @@ class TradingAlgorithms:
         return trade_points
 
     def algorithm_pair_min_max(self) -> List[TradePoint]:
-        # TODO: This algorithm works, but would become more readable if variables are renamed such
-        # that they are meaningful and maintain consistency
+        """
+        Similar to algorithm_buy_sell_adjacent_low_highs, but
+        additionally takes advantage if the price surge continues to
+        go up.
+        i.e.
+        When a surge is observed, purchase is made at the lower price
+        but unlike the other one the sell is made at the highest price
+        if the price continues to surge upwards
+        """
+        # TODO:
+        # This algorithm needs to be re-written for simplicity and
+        # renamed for consistency
         logging.info("Running: Algorithm of pairing min and max")
 
         trade_points: List[TradePoint] = []
@@ -139,7 +155,6 @@ class TradingAlgorithms:
 
     def algorithm_purchase_max(self) -> List[TradePoint]:
         """
-        Steps for the Least Purchase algorithm.
         Step A) Starting with the very first minute M
         Step B) Determine the allowed sell time-window for that minute
         Step C) In that range find the maximum price
@@ -153,8 +168,9 @@ class TradingAlgorithms:
         - Easy to implement
 
         CONS:
-        - This algorithm is very inefficient at profit-making because it does not buy-sell often.
-        - This algorithm culd also be very slow-performing in the following case:
+        - Would mostly miss out any purchase opportunities between minute 2 to minute min-hold
+        - Inefficient at profit-making because it does not buy-sell often.
+        - Could be very slow-performing in the following case:
             If the prices are constantly or mostly declining then Step C would end up finding maximum price
             in consecutive overlapping time-ranges
         """
@@ -208,7 +224,6 @@ class TradingAlgorithms:
 
     def algorithm_purchase_next_higher(self) -> List[TradePoint]:
         """
-        Steps for the Quick Purchase algorithm.
         Step A) Starting with the very first minute M
         Step B) Determine the allowed sell time-window for that minute
         Step C) In that range find the first price (say at Minute M) that is greater than the price at the current minute
@@ -221,10 +236,11 @@ class TradingAlgorithms:
         - Easy to implement
 
         CONS:
-        - This algorithm is inefficient at profit-making because it does not explore further better prices in the range
-        - This algorithm could also be very slow-performing in the following case:
-            If the prices are constantly or mostly declining then Step C would end up exploring consecutive
-            overlapping time-ranges
+        - Would mostly miss out any purchase opportunities between minute 2 to minute min-hold
+        - Inefficient at profit-making because it does not explore further better prices in the range
+        - Could be very slow-performing in the following case:
+            If the prices are constantly or mostly declining then Step C would end up finding maximum price
+            in consecutive overlapping time-ranges
         """
         logging.info("Running: Algorithm of purchasing the very next higher")
         trade_points: List[TradePoint] = []
@@ -277,7 +293,6 @@ class TradingAlgorithms:
 
     def algorithm_purchase_next_highest(self) -> List[TradePoint]:
         """
-        Steps for the Quick Purchase algorithm.
         Step A) Starting with the very first minute M
         Step B) Determine the allowed sell time-window for that minute
         Step C) In that range find the first price (say at Minute M) that is greater than the price at the current minute
@@ -292,6 +307,7 @@ class TradingAlgorithms:
         - This algorithm strives at maximizing profit-making by exploring the better prices in the range
 
         CONS:
+        - Would mostly miss out any purchase opportunities between minute 2 to minute min-hold
         - This profit-making strategy is still myopic
         """
         logging.info("Running: Algorithm of purchasing the local highest")
@@ -354,10 +370,4 @@ class TradingAlgorithms:
                 )
                 curr_offset += 1
 
-        return trade_points
-
-    def algorithm_new_unimplemented(self) -> List[TradePoint]:
-        logging.info("algorithm_new_unimplemented")
-        print("This algorithm is not yet implemented")
-        trade_points: List[TradePoint] = []
         return trade_points
