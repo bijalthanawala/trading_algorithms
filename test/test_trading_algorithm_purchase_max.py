@@ -9,7 +9,7 @@ from src.trading_algorithms import TradingAlgorithms
 from src.trade_point import TradePoint
 
 
-class TestTradingAlgorithms(unittest.TestCase):
+class TestPurchaseMax(unittest.TestCase):
     def setUp(self):
         # print("setUp: entry")
         self.mk0: MarketCondition = MarketCondition(0, 1.005)
@@ -31,7 +31,7 @@ class TestTradingAlgorithms(unittest.TestCase):
         # print("tearDown: entry")
         pass
 
-    def test_trading_algorithm_purchase_max_with_min_hold_0(self):
+    def test_with_min_hold_0(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=0, max_hold=len(self.market_conditions)
         )
@@ -43,7 +43,7 @@ class TestTradingAlgorithms(unittest.TestCase):
         self.assertEqual(trade_points[1].sell_point.price, self.mk4.price)
         self.assertEqual(trade_points[1].profit, self.mk4.price - self.mk2.price)
 
-    def test_trading_algorithm_purchase_max_with_min_hold_1(self):
+    def test_with_min_hold_1(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=1, max_hold=len(self.market_conditions)
         )
@@ -52,7 +52,7 @@ class TestTradingAlgorithms(unittest.TestCase):
         self.assertEqual(trade_points[0].sell_point.price, self.mk4.price)
         self.assertEqual(trade_points[0].profit, self.mk4.price - self.mk0.price)
 
-    def test_trading_algorithm_purchase_max_with_min_hold_4(self):
+    def test_with_min_hold_4(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=4, max_hold=len(self.market_conditions)
         )
@@ -61,7 +61,7 @@ class TestTradingAlgorithms(unittest.TestCase):
         self.assertEqual(trade_points[0].sell_point.price, self.mk5.price)
         self.assertEqual(trade_points[0].profit, self.mk5.price - self.mk0.price)
 
-    def test_trading_algorithm_purchase_max_with_min_hold_1_max_hold_4(self):
+    def test_with_min_hold_1_max_hold_4(self):
         trading_algorithms = TradingAlgorithms(
             self.market_conditions, min_hold=1, max_hold=4
         )
