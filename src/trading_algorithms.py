@@ -69,8 +69,9 @@ class TradingAlgorithms:
                     self.market_conditions[i],
                     self.market_conditions[i + self.min_hold + 1],
                 )
-                trade_points.append(trade_point)
                 logging.debug(f"Adding {trade_point}")
+                trade_points.append(trade_point)
+                i = i + self.min_hold + 1
             i += 1
         return trade_points
 

@@ -55,20 +55,9 @@ Read 100 rows
 Running: Algorithm of buying and selling adjacent lows and highs
 Trades are:
 Open at 00000(1.0708), close 00031(1.1047) (hold for 030 minutes) for profit 0.0339
-Open at 00001(1.3258), close 00032(1.3804) (hold for 030 minutes) for profit 0.0546
-Open at 00006(1.0250), close 00037(1.3644) (hold for 030 minutes) for profit 0.3394
-Open at 00008(1.3159), close 00039(1.3890) (hold for 030 minutes) for profit 0.0731
-Open at 00010(1.0126), close 00041(1.1870) (hold for 030 minutes) for profit 0.1744
-Open at 00011(1.1243), close 00042(1.2164) (hold for 030 minutes) for profit 0.0921
-Open at 00012(1.0069), close 00043(1.1114) (hold for 030 minutes) for profit 0.1045
-.
-.
-.
-Open at 00062(1.1449), close 00093(1.1518) (hold for 030 minutes) for profit 0.0069
-Open at 00063(1.2400), close 00094(1.3755) (hold for 030 minutes) for profit 0.1355
+Open at 00033(1.2676), close 00064(1.4465) (hold for 030 minutes) for profit 0.1789
 Open at 00065(1.0278), close 00096(1.3693) (hold for 030 minutes) for profit 0.3415
-Open at 00067(1.0453), close 00098(1.2366) (hold for 030 minutes) for profit 0.1913
-Total profit 4.7419
+Total profit 0.5543
 ```
 
 -----------------------
