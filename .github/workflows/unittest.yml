@@ -17,5 +17,5 @@ jobs:
         pip install -r requirements.txt
     - name: Test with unittest
       run: |
-        coverage run -m unittest --verbose
-        coverage report -m
+        coverage run --branch --module unittest --verbose
+        coverage report --show-missing --omit=test/*
