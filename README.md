@@ -24,22 +24,23 @@ The above will run with run with detfult arguments
 
 ```
 python3 main.py --help
-usage: main.py [-h] [--file FILE] [--algorithm {highest,higher,max,new}] [--verbose]
+usage: main.py [-h] [--file FILE] [--algorithm {adjacent,minmax,highest,higher,max,new}] [--verbose]
 
 Trading Algorithm
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   --file FILE, -f FILE  Name of the input CSV file (Default=test/market_conditions_100.csv)
-  --algorithm {highest,higher,max,new}, -a {highest,higher,max,new}
-                        Algorithm short name (Default=highest)
-                        ['highest = algorithm_purchase_next_highest',
+  --algorithm {adjacent,minmax,highest,higher,max,new}, -a {adjacent,minmax,highest,higher,max,new}
+                        Algorithm short name (Default=adjacent)
+                        ['adjacent = algorithm_buy_sell_adjacent_low_highs',
+                         'minmax = algorithm_pair_min_max',
+                         'highest = algorithm_purchase_next_highest',
                          'higher = algorithm_purchase_next_higher',
                          'max = algorithm_purchase_max',
                          'new = algorithm_new_unimplemented']
   --verbose, -v
 ```
-
 
 #### An example command with arguments
 

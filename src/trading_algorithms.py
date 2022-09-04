@@ -14,6 +14,8 @@ class TradingAlgorithms:
     @classmethod
     def ALGORITHMS(cls) -> Dict:
         algorithms = OrderedDict()
+        algorithms["adjacent"] = cls.algorithm_buy_sell_adjacent_low_highs
+        algorithms["minmax"] = cls.algorithm_pair_min_max
         algorithms["highest"] = cls.algorithm_purchase_next_highest
         algorithms["higher"] = cls.algorithm_purchase_next_higher
         algorithms["max"] = cls.algorithm_purchase_max
@@ -52,7 +54,81 @@ class TradingAlgorithms:
         # TODO: Find better way to do this, so that we do not have call this method with 'self' explicitly
         return self.ALGORITHMS()[algorithm_choice](self)
 
-    # Allow only kwargs and avoid possible errors
+    def algorithm_buy_sell_adjacent_low_highs(self) -> List[TradePoint]:
+        # NOTE: Adjacents here respects the minimum hold time
+        logging.info("Running: Algorithm of buying and selling adjacent lows and highs")
+        trade_points: List[TradePoint] = []
+
+        i = 0
+        while (i + self.min_hold + 1) < len(self.market_conditions):
+            if (
+                self.market_conditions[i].price
+                < self.market_conditions[i + self.min_hold + 1].price
+            ):
+                trade_point: TradePoint = TradePoint(
+                    self.market_conditions[i],
+                    self.market_conditions[i + self.min_hold + 1],
+                )
+                trade_points.append(trade_point)
+                logging.debug(f"Adding {trade_point}")
+            i += 1
+        return trade_points
+
+    def algorithm_pair_min_max(self) -> List[TradePoint]:
+        # TODO: This algorithm works, but would become more readable if variables are renamed such
+        # that they are meaningful and maintain consistency
+        logging.info("Running: Algorithm of pairing min and max")
+
+        trade_points: List[TradePoint] = []
+        possible_purchase_point = 0
+
+        while True:
+            # Find the lowest point across the min-hold time
+            scan_lowest_point = possible_purchase_point + self.min_hold + 1
+            while scan_lowest_point < len(self.market_conditions):
+                if (
+                    self.market_conditions[scan_lowest_point].price
+                    > self.market_conditions[possible_purchase_point].price
+                ):
+                    break
+                scan_lowest_point += 1
+                possible_purchase_point += 1
+            # Quit if we hit the end of the list
+            if scan_lowest_point >= len(self.market_conditions):
+                break
+
+            # Now find the highest point
+            scan_highest_point = scan_lowest_point
+            range_max = possible_purchase_point + self.max_hold + 1
+            while (scan_highest_point + 1 < range_max) and (
+                scan_highest_point + 1 < len(self.market_conditions)
+            ):
+                if (
+                    self.market_conditions[scan_highest_point + 1].price
+                    < self.market_conditions[scan_highest_point].price
+                ):
+                    break
+                scan_highest_point += 1
+
+            if scan_highest_point + 1 == len(self.market_conditions):
+                break  # TODO: We may be losing out on the one very last trade opportunity here
+
+            # Now marry the lowest with the highest point
+            trade_point: TradePoint = TradePoint(
+                self.market_conditions[possible_purchase_point],
+                self.market_conditions[scan_highest_point],
+            )
+            trade_points.append(trade_point)
+
+            # Quit if we hit the end of the list
+            if scan_highest_point + 1 == len(self.market_conditions):
+                break
+
+            possible_purchase_point = scan_highest_point + 1
+
+        return trade_points
+
+    # Allows only kwargs to avoid possible errors
     def get_purchase_range(
         self, *, curr_offset: int, num_market_conditions: int
     ) -> Tuple[int, int]:

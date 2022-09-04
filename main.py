@@ -11,7 +11,7 @@ from src.trade_point import TradePoint
 from src.trading_algorithms import TradingAlgorithms
 
 DEFAULT_CSV_FILENAME = "test/market_conditions_100.csv"
-DEFAULT_ALGORITHM = "highest"
+DEFAULT_ALGORITHM = "adjacent"
 
 
 def parse_arguments(unparsed_args: List[str]) -> argparse.Namespace:
